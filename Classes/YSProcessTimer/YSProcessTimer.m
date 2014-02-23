@@ -23,13 +23,22 @@
 
 @interface YSProcessTimer ()
 
-@property (nonatomic) NSString *processName;
 @property (nonatomic) NSDate *startDate;
 @property (nonatomic) NSMutableArray *raps;
 
 @end
 
 @implementation YSProcessTimer
+
++ (instancetype)sharedInstance
+{
+    static id s_sharedInstance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_sharedInstance =  [[self alloc] init];
+    });
+    return s_sharedInstance;
+}
 
 - (instancetype)initWithProcessName:(NSString*)processName
 {
@@ -103,6 +112,9 @@
     [desc appendString:@"\n"];
 
     NSLog(@"%@", desc);
+    
+    self.startDate = nil;
+    [self.raps removeAllObjects];
 }
 
 @end

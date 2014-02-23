@@ -10,7 +10,9 @@
 
 @interface YSProcessTimer : NSObject
 
++ (instancetype)sharedInstance;
 - (instancetype)initWithProcessName:(NSString*)processName;
+@property (nonatomic) NSString *processName;
 
 - (void)start;
 - (NSTimeInterval)currentRapTime;
