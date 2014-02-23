@@ -50,7 +50,7 @@
 
 - (void)start
 {
-    NSLog(@"Start %@", self.processName);
+    NSLog(@"Start %@", self.processName ? self.processName : nil);
     self.raps = [NSMutableArray array];
     self.startDate = [NSDate dateWithTimeIntervalSinceNow:0.];
 }
@@ -80,36 +80,43 @@
     
     NSDate *stopDate = [NSDate dateWithTimeIntervalSinceNow:0.];
     
-    void(^addSeparator)(NSMutableString *str, NSUInteger length) = ^(NSMutableString *str, NSUInteger lenght) {
+    NSString*(^stringToFill)(NSString *charToFill, NSUInteger length) = ^NSString*(NSString *charToFill, NSUInteger lenght) {
+        NSMutableString *str = [NSMutableString string];
         for (int i = 0; i < lenght; i++) {
-            [str appendString:@"="];
+            [str appendString:charToFill];
         }
-        [str appendString:@"\n"];
+        return str;
     };
-    NSString *allProcessTimeStr = @"All process time:";
-    NSMutableString *desc = [NSMutableString stringWithFormat:@"Stop\n\n"];
+    
+    NSMutableString *desc = [NSMutableString stringWithString:@"\n\n"];
+    
     NSUInteger separatorLen = self.processName ? self.processName.length + 4 : 10;
-    addSeparator(desc, separatorLen);
+    [desc appendFormat:@"%@\n", stringToFill(@"=", separatorLen)];
     if (self.processName) {
         [desc appendFormat:@"= %@ =\n", self.processName];
-        addSeparator(desc, separatorLen);
+        [desc appendFormat:@"%@\n", stringToFill(@"=", separatorLen)];
     }
+    NSUInteger leftColumnLen = 10;
+    NSString *startStr = @"Start";
+    [desc appendFormat:@"%@%@:%14f\n", startStr, stringToFill(@" ", leftColumnLen - startStr.length), 0.];
+    __block NSDate *beforeDate = self.startDate;
     [self.raps enumerateObjectsUsingBlock:^(YSProcessTimerRap *rap, NSUInteger idx, BOOL *stop) {
-        NSString *rapDesc = [NSString stringWithFormat:@"rap%@", @(idx+1)];
-        [desc appendString:rapDesc];
-        for (int i = 0; i < allProcessTimeStr.length - rapDesc.length - 1; i++) {
-            [desc appendString:@" "];
-        }
-        [desc appendString:@":"];
-        [desc appendFormat:@"%14f", [rap.date timeIntervalSinceDate:self.startDate]];
-        if (rap.comment) {
-            [desc appendFormat:@" (%@)", rap.comment];
-        }
-        [desc appendString:@"\n"];
+        NSString *rapStr = [NSString stringWithFormat:@"rap%@", @(idx+1)];
+        [desc appendFormat:@"rap%@%@:%14f (+%f) %@\n",
+         @(idx + 1),
+         stringToFill(@" ", leftColumnLen - rapStr.length),
+         [rap.date timeIntervalSinceDate:self.startDate],
+         [rap.date timeIntervalSinceDate:beforeDate],
+         rap.comment ? rap.comment : nil];
+        beforeDate = rap.date;
     }];
-    [desc appendFormat:@"%@%14f\n", allProcessTimeStr, [stopDate timeIntervalSinceDate:self.startDate]];
-    addSeparator(desc, separatorLen);
-    [desc appendString:@"\n"];
+    NSString *stopStr = @"Stop";
+    [desc appendFormat:@"%@%@:%14f (+%f)\n",
+     stopStr,
+     stringToFill(@" ", leftColumnLen - stopStr.length),
+     [stopDate timeIntervalSinceDate:self.startDate],
+     [stopDate timeIntervalSinceDate:beforeDate]];
+    [desc appendFormat:@"%@\n", stringToFill(@"=", separatorLen)];
 
     NSLog(@"%@", desc);
     
