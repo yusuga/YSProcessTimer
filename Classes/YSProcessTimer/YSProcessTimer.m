@@ -116,7 +116,7 @@
      stringToFill(@" ", leftColumnLen - stopStr.length),
      [stopDate timeIntervalSinceDate:self.startDate],
      [stopDate timeIntervalSinceDate:beforeDate]];
-    [desc appendFormat:@"%@\n", stringToFill(@"=", separatorLen)];
+    [desc appendFormat:@"%@\n\n", stringToFill(@"=", separatorLen)];
 
     NSLog(@"%@", desc);
     
