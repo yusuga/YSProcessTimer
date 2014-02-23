@@ -1,4 +1,4 @@
-YSProcessTime
+YSProcessTimer
 ======================
 処理時間を計測するための簡易的なタイマー
 
