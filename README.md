@@ -4,15 +4,16 @@ YSProcessTimer
 
 Log example
 ----------------
+
     ==============================
     = UIViewController lifecycle =
     ==============================
-    rap1            :      0.110560 (-[ViewController viewDidLoad])
-    rap2            :      0.110648 (-[ViewController viewWillAppear:])
-    rap3            :      0.115049 (-[ViewController viewWillLayoutSubviews])
-    rap4            :      0.115136 (-[ViewController viewDidLayoutSubviews])
-    rap5            :      0.122794 (-[ViewController viewDidAppear:])
-    All process time:      0.122807
+    Start     :      0.000000 ( 0.000000) -[ViewController awakeFromNib]
+    rap1      :      0.008628 (+0.008628) -[ViewController viewDidLoad]
+    rap2      :      0.008682 (+0.000054) -[ViewController viewWillAppear:]
+    rap3      :      0.010686 (+0.002004) -[ViewController viewWillLayoutSubviews]
+    rap4      :      0.011124 (+0.000438) -[ViewController viewDidLayoutSubviews]
+    Stop      :      0.013595 (+0.002471) -[ViewController viewDidAppear:]
     ==============================
 
 
