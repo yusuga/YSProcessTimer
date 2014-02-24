@@ -20,7 +20,7 @@
 - (void)awakeFromNib
 {
     YSProcessTimer *timer = [[YSProcessTimer alloc] initWithProcessName:@"UIViewController lifecycle"];
-    [timer start];
+    [timer startWithComment:[NSString stringWithFormat:@"%s", __func__]];
     self.timer = timer;
 }
 
@@ -50,10 +50,8 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
-    [self.timer addRapWithComment:[NSString stringWithFormat:@"%s", __func__]];
-    
-    [self.timer stop];
+    [super viewDidAppear:animated];    
+    [self.timer stopWithComment:[NSString stringWithFormat:@"%s", __func__]];
 }
 
 @end
