@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+#ifndef DEBUG
+    #define kYSProcessTimerInvalid 1
+#endif
+
 @interface YSProcessTimer : NSObject
 
 + (instancetype)sharedInstance;

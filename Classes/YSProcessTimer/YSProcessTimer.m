@@ -32,6 +32,10 @@
 
 + (instancetype)sharedInstance
 {
+#if kYSProcessTimerInvalid
+    return nil;
+#endif
+    
     static id s_sharedInstance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -42,6 +46,10 @@
 
 - (instancetype)initWithProcessName:(NSString*)processName
 {
+#if kYSProcessTimerInvalid
+    return nil;
+#endif
+    
     if (self = [super init]) {
         self.processName = processName;
     }
