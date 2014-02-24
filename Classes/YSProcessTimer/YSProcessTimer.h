@@ -18,9 +18,9 @@
 - (instancetype)initWithProcessName:(NSString*)processName;
 @property (nonatomic) NSString *processName;
 
-- (void)start;
+- (void)startWithComment:(NSString*)comment;
 - (NSTimeInterval)currentRapTime;
 - (void)addRapWithComment:(NSString *)comment;
-- (void)stop;
+- (void)stopWithComment:(NSString*)stopComment;
 
 @end
