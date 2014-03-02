@@ -16,7 +16,7 @@
 
 + (instancetype)sharedInstance;
 - (instancetype)initWithProcessName:(NSString*)processName;
-@property (nonatomic) NSString *processName;
+@property (nonatomic, copy) NSString *processName;
 
 - (void)startWithComment:(NSString*)comment;
 - (NSTimeInterval)currentRapTime;
