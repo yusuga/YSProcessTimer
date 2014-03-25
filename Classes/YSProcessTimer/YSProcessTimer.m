@@ -204,15 +204,16 @@ static inline NSString *stringToFill(NSString *charToFill, NSUInteger lenght)
     for (YSProcessTimerAverage *ave in self.averages) {
         time += ave.time;
     }
+    NSTimeInterval averageTime = time/((NSTimeInterval)[self.averages count]);
     NSMutableString *desc = [NSMutableString string];
     [desc appendString:[self headerString]];
     [desc appendFormat:@"\
 count   : %@\n\
-average : %f\n", @([self.averages count]), time/((NSTimeInterval)[self.averages count])];
+average : %f\n", @([self.averages count]), averageTime];
     [desc appendString:stringToFill(@"=", [self headerOneLineLength])];
     
     NSLog(@"\n\n%@\n\n", desc);
-    return time;
+    return averageTime;
 }
 
 @end
