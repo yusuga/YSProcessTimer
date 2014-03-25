@@ -182,7 +182,7 @@ static inline NSString *stringToFill(NSString *charToFill, NSUInteger lenght)
 
 - (void)startAverageTime
 {
-    NSLog(@"Start average: %@, count: %@", self.processName ? self.processName : @"average", @([self.averages count]));
+//    NSLog(@"Start average: %@, count: %@", self.processName ? self.processName : @"average", @([self.averages count]));
 
     YSProcessTimerAverage *ave = [[YSProcessTimerAverage alloc] init];
     ave.startDate = [NSDate dateWithTimeIntervalSinceNow:0.0];
@@ -191,14 +191,14 @@ static inline NSString *stringToFill(NSString *charToFill, NSUInteger lenght)
 
 - (void)stopAverageTime
 {
-    NSLog(@"Stop average");
+//    NSLog(@"Stop average");
     
     self.currentAverage.time = [[NSDate dateWithTimeIntervalSinceNow:0.0] timeIntervalSinceDate:self.currentAverage.startDate];
     [self.averages addObject:self.currentAverage];
     self.currentAverage = nil;
 }
 
-- (void)logAverageTime
+- (NSTimeInterval)averageTime
 {
     NSTimeInterval time = 0.0;
     for (YSProcessTimerAverage *ave in self.averages) {
@@ -212,6 +212,7 @@ average : %f\n", @([self.averages count]), time/((NSTimeInterval)[self.averages 
     [desc appendString:stringToFill(@"=", [self headerOneLineLength])];
     
     NSLog(@"\n\n%@\n\n", desc);
+    return time;
 }
 
 @end

@@ -65,7 +65,7 @@
             [NSThread sleepForTimeInterval:0.1];
             [timer stopAverageTime];
         }
-        [timer logAverageTime];
+        [timer averageTime];
     });
 }
 

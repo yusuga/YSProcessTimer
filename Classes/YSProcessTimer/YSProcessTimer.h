@@ -25,6 +25,6 @@
 
 - (void)startAverageTime;
 - (void)stopAverageTime;
-- (void)logAverageTime;
+- (NSTimeInterval)averageTime;
 
 @end
