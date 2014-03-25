@@ -11,22 +11,40 @@
 #define LOG_PROCESS_TIME(FORMAT, ...) printf("%s\n", [[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);
 
 @interface YSProcessTimerRap : NSObject
-
 @property (nonatomic) NSDate *date;
 @property (nonatomic) NSString *comment;
-
 @end
 
 @implementation YSProcessTimerRap
-
 @end
+
+@interface YSProcessTimerAverage : NSObject
+@property (nonatomic) NSDate *startDate;
+@property (nonatomic) NSTimeInterval time;
+@end
+
+@implementation YSProcessTimerAverage
+@end
+
 
 @interface YSProcessTimer ()
 
 @property (nonatomic) YSProcessTimerRap *startTime;
 @property (nonatomic) NSMutableArray *raps;
 
+@property (nonatomic) NSMutableArray *averages;
+@property (nonatomic) YSProcessTimerAverage *currentAverage;
+
 @end
+
+static inline NSString *stringToFill(NSString *charToFill, NSUInteger lenght)
+{
+    NSMutableString *str = [NSMutableString string];
+    for (int i = 0; i < lenght; i++) {
+        [str appendString:charToFill];
+    }
+    return str;
+}
 
 @implementation YSProcessTimer
 
@@ -52,14 +70,36 @@
     
     if (self = [super init]) {
         self.processName = processName;
+        self.raps = [NSMutableArray arrayWithCapacity:1000];
+        self.averages = [NSMutableArray arrayWithCapacity:1000];
     }
     return self;
 }
 
+#pragma mark - log
+
+- (NSString*)headerString
+{
+    NSMutableString *str = [NSMutableString string];
+    NSUInteger separatorLen = [self headerOneLineLength];
+    [str appendFormat:@"%@\n", stringToFill(@"=", separatorLen)];
+    if (self.processName) {
+        [str appendFormat:@"= %@ =\n", self.processName];
+        [str appendFormat:@"%@\n", stringToFill(@"=", separatorLen)];
+    }
+    return str;
+}
+
+- (NSUInteger)headerOneLineLength
+{
+    return self.processName ? self.processName.length + 4 : 10;
+}
+
+#pragma mark - rap
+
 - (void)startWithComment:(NSString*)comment
 {
     NSLog(@"Start %@", self.processName ? self.processName : nil);
-    self.raps = [NSMutableArray array];
 
     YSProcessTimerRap *startTime = [[YSProcessTimerRap alloc] init];
     startTime.date = [NSDate dateWithTimeIntervalSinceNow:0.];
@@ -91,14 +131,6 @@
     }
     
     NSDate *stopDate = [NSDate dateWithTimeIntervalSinceNow:0.];
-    
-    NSString*(^stringToFill)(NSString *charToFill, NSUInteger length) = ^NSString*(NSString *charToFill, NSUInteger lenght) {
-        NSMutableString *str = [NSMutableString string];
-        for (int i = 0; i < lenght; i++) {
-            [str appendString:charToFill];
-        }
-        return str;
-    };
     
     NSMutableString *desc = [NSMutableString stringWithString:@"\n\n"];
     
@@ -144,6 +176,42 @@
     
     self.startTime = nil;
     [self.raps removeAllObjects];
+}
+
+#pragma mark - Average
+
+- (void)startAverageTime
+{
+    NSLog(@"Start average: %@, count: %@", self.processName ? self.processName : @"average", @([self.averages count]));
+
+    YSProcessTimerAverage *ave = [[YSProcessTimerAverage alloc] init];
+    ave.startDate = [NSDate dateWithTimeIntervalSinceNow:0.0];
+    self.currentAverage = ave;
+}
+
+- (void)stopAverageTime
+{
+    NSLog(@"Stop average");
+    
+    self.currentAverage.time = [[NSDate dateWithTimeIntervalSinceNow:0.0] timeIntervalSinceDate:self.currentAverage.startDate];
+    [self.averages addObject:self.currentAverage];
+    self.currentAverage = nil;
+}
+
+- (void)logAverageTime
+{
+    NSTimeInterval time = 0.0;
+    for (YSProcessTimerAverage *ave in self.averages) {
+        time += ave.time;
+    }
+    NSMutableString *desc = [NSMutableString string];
+    [desc appendString:[self headerString]];
+    [desc appendFormat:@"\
+count   : %@\n\
+average : %f\n", @([self.averages count]), time/((NSTimeInterval)[self.averages count])];
+    [desc appendString:stringToFill(@"=", [self headerOneLineLength])];
+    
+    NSLog(@"\n\n%@\n\n", desc);
 }
 
 @end

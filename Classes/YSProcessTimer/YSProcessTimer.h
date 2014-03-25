@@ -23,4 +23,8 @@
 - (void)addRapWithComment:(NSString *)comment;
 - (void)stopWithComment:(NSString*)stopComment;
 
+- (void)startAverageTime;
+- (void)stopAverageTime;
+- (void)logAverageTime;
+
 @end

@@ -52,6 +52,21 @@
 {
     [super viewDidAppear:animated];    
     [self.timer stopWithComment:[NSString stringWithFormat:@"%s", __func__]];
+    
+    [self testAverage];
+}
+
+- (void)testAverage
+{
+    YSProcessTimer *timer = [[YSProcessTimer alloc] initWithProcessName:@"Test averrage"];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        for (int i = 0; i < 50; i++) {
+            [timer startAverageTime];
+            [NSThread sleepForTimeInterval:0.1];
+            [timer stopAverageTime];
+        }
+        [timer logAverageTime];
+    });
 }
 
 @end
