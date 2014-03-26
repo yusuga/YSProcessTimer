@@ -27,4 +27,11 @@
 - (void)stopAverageTime;
 - (NSTimeInterval)averageTime;
 
++ (void)startWithProcessName:(NSString*)name
+                     process:(void(^)(void))process;
+
++ (NSTimeInterval)startAverageWithProcessName:(NSString*)name
+                               numberOfTrials:(NSUInteger)numberOfTrials
+                                      process:(void(^)(void))process;
+
 @end

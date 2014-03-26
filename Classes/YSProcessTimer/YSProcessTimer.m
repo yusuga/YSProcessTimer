@@ -216,4 +216,31 @@ average : %f\n", @([self.averages count]), averageTime];
     return averageTime;
 }
 
+#pragma mark - Simple timer
+
++ (void)startWithProcessName:(NSString*)name
+                     process:(void(^)(void))process
+{
+    YSProcessTimer *timer = [[YSProcessTimer alloc] initWithProcessName:name];
+    [timer startWithComment:nil];
+    process();
+    [timer stopWithComment:nil];
+}
+
++ (NSTimeInterval)startAverageWithProcessName:(NSString*)name
+                               numberOfTrials:(NSUInteger)numberOfTrials
+                                      process:(void(^)(void))process
+
+{
+    YSProcessTimer *timer = [[YSProcessTimer alloc] initWithProcessName:name];
+    for (int i = 0; i < numberOfTrials; i++) {
+        @autoreleasepool {
+            [timer startAverageTime];
+            process();
+            [timer stopAverageTime];
+        }
+    }
+    return [timer averageTime];
+}
+
 @end

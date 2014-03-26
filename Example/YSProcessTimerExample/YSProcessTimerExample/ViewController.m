@@ -54,6 +54,7 @@
     [self.timer stopWithComment:[NSString stringWithFormat:@"%s", __func__]];
     
     [self testAverage];
+    [self testSimpleTimer];
 }
 
 - (void)testAverage
@@ -67,6 +68,17 @@
         }
         [timer averageTime];
     });
+}
+
+- (void)testSimpleTimer
+{
+    [YSProcessTimer startWithProcessName:@"Test simple timer" process:^{
+        [NSThread sleepForTimeInterval:1.];
+    }];
+    
+    [YSProcessTimer startAverageWithProcessName:@"Test simple sverage timer" numberOfTrials:10 process:^{
+        [NSThread sleepForTimeInterval:0.1];
+    }];
 }
 
 @end
